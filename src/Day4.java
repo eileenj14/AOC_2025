@@ -1,0 +1,115 @@
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
+
+public class Day4
+{
+    public static int numOfColumns = 0;
+    public static int numOfRows = 0;
+    public static String[][] diagram = new String[0][0];
+    public static int numOfAccessibleRolls = 0;
+    public static int totalNumOfAccessibleRolls = 0;
+
+    public static void main(String[] args) throws FileNotFoundException
+    {
+        createDiagram();
+        //getNumOfAccessibleRolls();
+        //System.out.println(numOfAccessibleRolls);
+        getNumOfAccessibleRolls2();
+        System.out.println(totalNumOfAccessibleRolls);
+    }
+
+    public static void getNumOfAccessibleRolls()
+    {
+        for(int x = 0; x < numOfColumns; x++)
+        {
+            for(int y = 0; y < numOfRows; y++)
+            {
+                if(check(x, y)) numOfAccessibleRolls++;
+            }
+        }
+    }
+
+    public static void getNumOfAccessibleRolls2()
+    {
+        for(int x = 0; x < numOfColumns; x++)
+        {
+            for(int y = 0; y < numOfRows; y++)
+            {
+                if(check(x, y))
+                {
+                    numOfAccessibleRolls++;
+                    diagram[x][y] = "X";
+                }
+            }
+        }
+        totalNumOfAccessibleRolls += numOfAccessibleRolls;
+        while(numOfAccessibleRolls > 0)
+        {
+            numOfAccessibleRolls = 0;
+            for(int x = 0; x < numOfColumns; x++)
+            {
+                for(int y = 0; y < numOfRows; y++)
+                {
+                    if(diagram[x][y].equals("X")) diagram[x][y] = ".";
+                    if(check(x, y))
+                    {
+                        numOfAccessibleRolls++;
+                        diagram[x][y] = "X";
+                    }
+                }
+            }
+            totalNumOfAccessibleRolls += numOfAccessibleRolls;
+        }
+    }
+
+    public static boolean check(int columnNum, int rowNum)
+    {
+        String roll = diagram[columnNum][rowNum];
+        if(roll.equals(".")) return false;
+        int numOfAdjacentRolls = 0;
+        for(int x = columnNum - 1; x <= columnNum + 1; x++)
+        {
+            for(int y = rowNum - 1; y <= rowNum + 1; y++)
+            {
+                if(x > -1 && x < numOfColumns && y > -1 && y < numOfRows)
+                {
+                    if(diagram[x][y].equals("@")) numOfAdjacentRolls++;
+                }
+            }
+        }
+        return numOfAdjacentRolls - 1 < 4;
+    }
+
+    public static void createDiagram() throws FileNotFoundException
+    {
+        File f = new File("Day4_Input.txt");
+        Scanner s = new Scanner(f);
+        getDimensions();
+        diagram = new String[numOfColumns][numOfRows];
+        int rowNum = 0;
+        while(s.hasNextLine())
+        {
+            String row = s.nextLine();
+            for(int i = 0; i < row.length(); i++)
+            {
+                diagram[i][rowNum] = row.substring(i, i + 1);
+            }
+            rowNum++;
+        }
+    }
+
+    public static void getDimensions() throws FileNotFoundException
+    {
+        File f = new File("Day4_Input.txt");
+        Scanner s = new Scanner(f);
+        String row = s.nextLine();
+        numOfColumns = row.length();
+        numOfRows = 1;
+        while(s.hasNextLine())
+        {
+            row = s.nextLine();
+            numOfRows++;
+        }
+    }
+}
