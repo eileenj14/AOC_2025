@@ -6,7 +6,7 @@ public class Day4
 {
     public static int numOfColumns = 0;
     public static int numOfRows = 0;
-    public static String[][] diagram = new String[0][0];
+    public static String[][] diagram;
     public static int numOfAccessibleRolls = 0;
     public static int totalNumOfAccessibleRolls = 0;
 
