@@ -8,7 +8,7 @@ import static java.lang.Long.parseLong;
 public class Day5
 {
     public static int numOfRanges = 0;
-    public static int numOfIds = 0;
+    public static int numOfIds = -1;
     public static List<Long> idRangeMins;
     public static List<Long> idRangeMaxes;
     public static List<Long> ids;
@@ -16,13 +16,6 @@ public class Day5
     public static void main(String[] args) throws FileNotFoundException
     {
         createDatabaseFile();
-        boolean changed = true;
-        while(changed)
-        {
-            int prevNumOfRanges = numOfRanges;
-            mergeRanges();
-            if(numOfRanges == prevNumOfRanges) changed = false;
-        }
         System.out.println(getNumOfAvailableFreshIds());
         System.out.println(getNumOfFreshIds());
     }
@@ -53,6 +46,36 @@ public class Day5
             totalNumOfFreshIds += numOfFreshIds;
         }
         return totalNumOfFreshIds;
+    }
+
+    public static void createDatabaseFile() throws FileNotFoundException
+    {
+        File f = new File("Day5_Input.txt");
+        Scanner s = new Scanner(f);
+        while(s.hasNextLine())
+        {
+            String potential = s.nextLine();
+            if(potential.indexOf("-") > 0) numOfRanges++;
+            else numOfIds++;
+        }
+        s = new Scanner(f);
+        idRangeMins = new ArrayList<>();
+        idRangeMaxes = new ArrayList<>();
+        ids = new ArrayList<>();
+        for(int n = 0; n < numOfRanges; n++)
+        {
+            String range = s.next();
+            idRangeMins.add(parseLong(range.substring(0, range.indexOf("-"))));
+            idRangeMaxes.add(parseLong(range.substring(range.indexOf("-") + 1)));
+        }
+        for(int n = 0; n < numOfIds; n++) ids.add(s.nextLong());
+        boolean changed = true;
+        while(changed)
+        {
+            int prevNumOfRanges = numOfRanges;
+            mergeRanges();
+            if(numOfRanges == prevNumOfRanges) changed = false;
+        }
     }
 
     public static void mergeRanges()
@@ -108,35 +131,5 @@ public class Day5
             idRangeMaxes.add(ranges.get(r + 1));
         }
         numOfRanges = idRangeMins.size();
-    }
-
-    public static void createDatabaseFile() throws FileNotFoundException
-    {
-        File f = new File("Day5_Input.txt");
-        Scanner s = new Scanner(f);
-        getDatabaseFileSize();
-        idRangeMins = new ArrayList<>();
-        idRangeMaxes = new ArrayList<>();
-        ids = new ArrayList<>();
-        for(int n = 0; n < numOfRanges; n++)
-        {
-            String range = s.next();
-            idRangeMins.add(parseLong(range.substring(0, range.indexOf("-"))));
-            idRangeMaxes.add(parseLong(range.substring(range.indexOf("-") + 1)));
-        }
-        for(int n = 0; n < numOfIds; n++) ids.add(s.nextLong());
-    }
-
-    public static void getDatabaseFileSize() throws FileNotFoundException
-    {
-        File f = new File("Day5_Input.txt");
-        Scanner s = new Scanner(f);
-        while(s.hasNextLine())
-        {
-            String potential = s.nextLine();
-            if(potential.indexOf("-") > 0) numOfRanges++;
-            else numOfIds++;
-        }
-        numOfIds--;
     }
 }

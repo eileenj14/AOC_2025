@@ -85,7 +85,13 @@ public class Day4
     {
         File f = new File("Day4_Input.txt");
         Scanner s = new Scanner(f);
-        getDimensions();
+        while(s.hasNextLine())
+        {
+            String row = s.nextLine();
+            numOfColumns = row.length();
+            numOfRows++;
+        }
+        s = new Scanner(f);
         diagram = new String[numOfColumns][numOfRows];
         int rowNum = 0;
         while(s.hasNextLine())
@@ -96,20 +102,6 @@ public class Day4
                 diagram[i][rowNum] = row.substring(i, i + 1);
             }
             rowNum++;
-        }
-    }
-
-    public static void getDimensions() throws FileNotFoundException
-    {
-        File f = new File("Day4_Input.txt");
-        Scanner s = new Scanner(f);
-        String row = s.nextLine();
-        numOfColumns = row.length();
-        numOfRows = 1;
-        while(s.hasNextLine())
-        {
-            row = s.nextLine();
-            numOfRows++;
         }
     }
 }
