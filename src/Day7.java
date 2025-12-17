@@ -18,7 +18,27 @@ public class Day7
 
     public static void getNumOfSplits()
     {
-
+        for(int c = 0; c < numOfColumns; c++)
+        {
+            if(diagram[c][0].equals("S")) diagram[c][1] = "|";
+            break;
+        }
+        for(int r = 1; r < numOfRows; r++)
+        {
+            for(int c = 0; c < numOfColumns; c++)
+            {
+                if(diagram[c][r].equals("|"))
+                {
+                    if(diagram[c][r + 1].equals("^"))
+                    {
+                        diagram[c - 1][r + 1] = "|";
+                        diagram[c + 1][r + 1] = "|";
+                        numOfSplits++;
+                    }
+                    else diagram[c][r + 1] = "|";
+                }
+            }
+        }
     }
 
     public static void createDiagram() throws FileNotFoundException
