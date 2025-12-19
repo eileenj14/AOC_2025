@@ -8,22 +8,28 @@ public class Day7
     public static int numOfRows = 0;
     public static String[][] diagram;
     public static int numOfSplits = 0;
+    public static int numOfTimelines = 0;
 
     public static void main(String[] args) throws FileNotFoundException
     {
         createDiagram();
-        getNumOfSplits();
-        System.out.println(numOfSplits);
+        //getNumOfSplits();
+        //System.out.println(numOfSplits);
+        getNumOfTimelines();
+        System.out.println(numOfTimelines);
     }
 
     public static void getNumOfSplits()
     {
         for(int c = 0; c < numOfColumns; c++)
         {
-            if(diagram[c][0].equals("S")) diagram[c][1] = "|";
-            break;
+            if(diagram[c][0].equals("S"))
+            {
+                diagram[c][1] = "|";
+                break;
+            }
         }
-        for(int r = 1; r < numOfRows; r++)
+        for(int r = 1; r < numOfRows - 1; r++)
         {
             for(int c = 0; c < numOfColumns; c++)
             {
@@ -38,6 +44,41 @@ public class Day7
                     else diagram[c][r + 1] = "|";
                 }
             }
+        }
+    }
+
+    public static void getNumOfTimelines()
+    {
+        for(int c = 0; c < numOfColumns; c++)
+        {
+            if(diagram[c][0].equals("S"))
+            {
+                diagram[c][1] = "|";
+                break;
+            }
+        }
+        for(int r = 1; r < numOfRows - 1; r++)
+        {
+            int splits = 0;
+            int nonSplits = 0;
+            for(int c = 0; c < numOfColumns; c++)
+            {
+                if(diagram[c][r].equals("|"))
+                {
+                    if(diagram[c][r + 1].equals("^"))
+                    {
+                        diagram[c - 1][r + 1] = "|";
+                        diagram[c + 1][r + 1] = "|";
+                        splits++;
+                    }
+                    else
+                    {
+                        diagram[c][r + 1] = "|";
+                        nonSplits++;
+                    }
+                }
+            }
+
         }
     }
 
