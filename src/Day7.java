@@ -8,13 +8,13 @@ public class Day7
     public static int numOfRows = 0;
     public static String[][] diagram;
     public static int numOfSplits = 0;
-    public static int numOfTimelines = 0;
+    public static long numOfTimelines = 0;
 
     public static void main(String[] args) throws FileNotFoundException
     {
         createDiagram();
-        getNumOfSplits();
-        System.out.println(numOfSplits);
+        //getNumOfSplits();
+        //System.out.println(numOfSplits);
         getNumOfTimelines();
         System.out.println(numOfTimelines);
     }
@@ -49,7 +49,35 @@ public class Day7
 
     public static void getNumOfTimelines()
     {
-
+        long[] timelines = new long[numOfColumns];
+        for(int c = 0; c < numOfColumns; c++)
+        {
+            if(diagram[c][0].equals("S"))
+            {
+                diagram[c][1] = "|";
+                timelines[c] = timelines[c] + 1;
+                break;
+            }
+        }
+        for(int r = 1; r < numOfRows - 1; r++)
+        {
+            for(int c = 0; c < numOfColumns; c++)
+            {
+                if(diagram[c][r].equals("|"))
+                {
+                    if(diagram[c][r + 1].equals("^"))
+                    {
+                        diagram[c - 1][r + 1] = "|";
+                        diagram[c + 1][r + 1] = "|";
+                        timelines[c - 1] = timelines[c - 1] + timelines[c];
+                        timelines[c + 1] = timelines[c + 1] + timelines[c];
+                        timelines[c] = 0;
+                    }
+                    else diagram[c][r + 1] = "|";
+                }
+            }
+        }
+        for(int c = 0; c < numOfColumns; c++) numOfTimelines += timelines[c];
     }
 
     public static void createDiagram() throws FileNotFoundException
