@@ -47,30 +47,23 @@ public class Day6
         s = new Scanner(f);
         problemNums = new int[numOfProblems][numOfInputsPerProblem];
         problemOps = new String[numOfProblems];
-        int i = 0;
-        while(s.hasNextLine())
+        for(int i = 0; i < numOfInputsPerProblem; i++)
         {
             line = s.nextLine();
             lineArray = line.trim().split("\\s+");
-            if(i < numOfInputsPerProblem)
-            {
-                for(int p = 0; p < numOfProblems; p++) problemNums[p][i] = parseInt(lineArray[p]);
-                i++;
-            }
-            else for(int p = 0; p < numOfProblems; p++) problemOps[p] = lineArray[p];
+            for(int p = 0; p < numOfProblems; p++) problemNums[p][i] = parseInt(lineArray[p]);
         }
+        line = s.nextLine();
+        lineArray = line.trim().split("\\s+");
+        for(int p = 0; p < numOfProblems; p++) problemOps[p] = lineArray[p];
     }
 
     public static void createHomework2() throws FileNotFoundException
     {
         File f = new File("Day6_Input.txt");
         Scanner s = new Scanner(f);
-        problemNums = new int[numOfProblems][numOfInputsPerProblem];
         String[] lines = new String[numOfInputsPerProblem];
-        for(int i = 0; i < numOfInputsPerProblem; i++)
-        {
-            lines[i] = s.nextLine();
-        }
+        for(int i = 0; i < numOfInputsPerProblem; i++) lines[i] = s.nextLine();
         int maxLength = 0;
         for(int i = 0; i < numOfInputsPerProblem; i++)
         {
@@ -80,6 +73,7 @@ public class Day6
         {
             while(lines[i].length() != maxLength) lines[i] += " ";
         }
+        problemNums = new int[numOfProblems][numOfInputsPerProblem];
         for(int p = 0; p < numOfProblems; p++)
         {
             for(int i = 0; i < numOfInputsPerProblem + 1; i++)
@@ -98,10 +92,7 @@ public class Day6
             }
         }
         String[] reverse = new String[numOfProblems];
-        for(int p = 0; p < numOfProblems; p++)
-        {
-            reverse[numOfProblems - 1 - p] = problemOps[p];
-        }
+        for(int p = 0; p < numOfProblems; p++) reverse[numOfProblems - 1 - p] = problemOps[p];
         problemOps = reverse;
     }
 }

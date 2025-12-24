@@ -32,19 +32,7 @@ public class Day4
 
     public static void getNumOfAccessibleRolls2()
     {
-        for(int x = 0; x < numOfColumns; x++)
-        {
-            for(int y = 0; y < numOfRows; y++)
-            {
-                if(check(x, y))
-                {
-                    numOfAccessibleRolls++;
-                    diagram[x][y] = "X";
-                }
-            }
-        }
-        totalNumOfAccessibleRolls += numOfAccessibleRolls;
-        while(numOfAccessibleRolls > 0)
+        while(true)
         {
             numOfAccessibleRolls = 0;
             for(int x = 0; x < numOfColumns; x++)
@@ -60,6 +48,7 @@ public class Day4
                 }
             }
             totalNumOfAccessibleRolls += numOfAccessibleRolls;
+            if(numOfAccessibleRolls == 0) break;
         }
     }
 
@@ -78,7 +67,7 @@ public class Day4
                 }
             }
         }
-        return numOfAdjacentRolls - 1 < 4;
+        return numOfAdjacentRolls < 5;
     }
 
     public static void createDiagram() throws FileNotFoundException
@@ -93,15 +82,13 @@ public class Day4
         }
         s = new Scanner(f);
         diagram = new String[numOfColumns][numOfRows];
-        int rowNum = 0;
-        while(s.hasNextLine())
+        for(int r = 0; r < numOfRows; r++)
         {
             String row = s.nextLine();
-            for(int i = 0; i < row.length(); i++)
+            for(int c = 0; c < numOfColumns; c++)
             {
-                diagram[i][rowNum] = row.substring(i, i + 1);
+                diagram[c][r] = row.substring(c, c + 1);
             }
-            rowNum++;
         }
     }
 }
