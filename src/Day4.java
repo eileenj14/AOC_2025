@@ -13,13 +13,13 @@ public class Day4
     public static void main(String[] args) throws FileNotFoundException
     {
         createDiagram();
-        //getNumOfAccessibleRolls();
+        //getFirstPass();
         //System.out.println(numOfAccessibleRolls);
-        getNumOfAccessibleRolls2();
+        getTotalNumOfAccessibleRolls();
         System.out.println(totalNumOfAccessibleRolls);
     }
 
-    public static void getNumOfAccessibleRolls()
+    public static void getFirstPass()
     {
         for(int x = 0; x < numOfColumns; x++)
         {
@@ -30,7 +30,7 @@ public class Day4
         }
     }
 
-    public static void getNumOfAccessibleRolls2()
+    public static void getTotalNumOfAccessibleRolls()
     {
         while(true)
         {

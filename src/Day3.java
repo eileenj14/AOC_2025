@@ -7,7 +7,7 @@ public class Day3
 {
     public static long totalJoltage = 0;
     public static int digit = 0;
-    public static int startIndex = 0;
+    public static int index = 0;
 
     public static void main(String[] args) throws FileNotFoundException
     {
@@ -25,10 +25,10 @@ public class Day3
     public static int getMaxJoltage(String bank)
     {
         int maxJoltage = 0;
-        startIndex = 0;
+        index = 0;
         for(int b = 1; b <= 2; b++)
         {
-            digit = parseInt(bank.substring(startIndex, startIndex + 1));
+            digit = parseInt(bank.substring(index, index + 1));
             findMaxDigit(bank, b, 2);
             maxJoltage = maxJoltage * 10 + digit;
         }
@@ -38,10 +38,10 @@ public class Day3
     public static long getMaxJoltage2(String bank)
     {
         long maxJoltage = 0;
-        startIndex = 0;
+        index = 0;
         for(int b = 1; b <= 12; b++)
         {
-            digit = parseInt(bank.substring(startIndex, startIndex + 1));
+            digit = parseInt(bank.substring(index, index + 1));
             findMaxDigit(bank, b, 12);
             maxJoltage = maxJoltage * 10 + digit;
         }
@@ -51,16 +51,16 @@ public class Day3
     public static void findMaxDigit(String bank, int batteryNum, int maxBatteryNum)
     {
         boolean maxChanged = false;
-        for(int i = startIndex; i + maxBatteryNum - batteryNum < bank.length(); i++)
+        for(int i = index; i + maxBatteryNum - batteryNum < bank.length(); i++)
         {
             int potential = parseInt(bank.substring(i, i + 1));
             if(potential > digit)
             {
                 digit = potential;
-                startIndex = i + 1;
+                index = i + 1;
                 maxChanged = true;
             }
         }
-        if(!maxChanged) startIndex++;
+        if(!maxChanged) index++;
     }
 }
