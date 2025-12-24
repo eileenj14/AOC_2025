@@ -13,41 +13,12 @@ public class Day7
     public static void main(String[] args) throws FileNotFoundException
     {
         createDiagram();
-        //getNumOfSplits();
-        //System.out.println(numOfSplits);
-        getNumOfTimelines();
+        getNumOfSplitsAndTimelines();
+        System.out.println(numOfSplits);
         System.out.println(numOfTimelines);
     }
 
-    public static void getNumOfSplits()
-    {
-        for(int c = 0; c < numOfColumns; c++)
-        {
-            if(diagram[c][0].equals("S"))
-            {
-                diagram[c][1] = "|";
-                break;
-            }
-        }
-        for(int r = 1; r < numOfRows - 1; r++)
-        {
-            for(int c = 0; c < numOfColumns; c++)
-            {
-                if(diagram[c][r].equals("|"))
-                {
-                    if(diagram[c][r + 1].equals("^"))
-                    {
-                        diagram[c - 1][r + 1] = "|";
-                        diagram[c + 1][r + 1] = "|";
-                        numOfSplits++;
-                    }
-                    else diagram[c][r + 1] = "|";
-                }
-            }
-        }
-    }
-
-    public static void getNumOfTimelines()
+    public static void getNumOfSplitsAndTimelines()
     {
         long[] timelines = new long[numOfColumns];
         for(int c = 0; c < numOfColumns; c++)
@@ -69,6 +40,7 @@ public class Day7
                     {
                         diagram[c - 1][r + 1] = "|";
                         diagram[c + 1][r + 1] = "|";
+                        numOfSplits++;
                         timelines[c - 1] = timelines[c - 1] + timelines[c];
                         timelines[c + 1] = timelines[c + 1] + timelines[c];
                         timelines[c] = 0;

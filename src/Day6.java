@@ -15,7 +15,7 @@ public class Day6
         createHomework();
         System.out.println(getTotalOfAnswers());
         createHomework2();
-        System.out.println(getTotalOfAnswers2());
+        System.out.println(getTotalOfAnswers());
     }
 
     public static long getTotalOfAnswers()
@@ -26,7 +26,10 @@ public class Day6
             long answer = problemNums[p][0];
             for(int i = 1; i < numOfInputsPerProblem; i++)
             {
-                if(problemOps[p].equals("*")) answer *= problemNums[p][i];
+                if(problemOps[p].equals("*"))
+                {
+                    if(problemNums[p][i] != 0) answer *= problemNums[p][i];
+                }
                 else answer += problemNums[p][i];
             }
             totalOfAnswers += answer;
@@ -56,25 +59,6 @@ public class Day6
             }
             else for(int p = 0; p < numOfProblems; p++) problemOps[p] = lineArray[p];
         }
-    }
-
-    public static long getTotalOfAnswers2()
-    {
-        long totalOfAnswers = 0;
-        for(int p = 0; p < numOfProblems; p++)
-        {
-            long answer = problemNums[p][0];
-            for(int i = 1; i < numOfInputsPerProblem; i++)
-            {
-                if(problemOps[numOfProblems - 1 - p].equals("*"))
-                {
-                    if(problemNums[p][i] != 0) answer *= problemNums[p][i];
-                }
-                else answer += problemNums[p][i];
-            }
-            totalOfAnswers += answer;
-        }
-        return totalOfAnswers;
     }
 
     public static void createHomework2() throws FileNotFoundException
@@ -113,5 +97,11 @@ public class Day6
                 else problemNums[p][i] = parseInt(num.trim());
             }
         }
+        String[] reverse = new String[numOfProblems];
+        for(int p = 0; p < numOfProblems; p++)
+        {
+            reverse[numOfProblems - 1 - p] = problemOps[p];
+        }
+        problemOps = reverse;
     }
 }
