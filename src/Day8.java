@@ -1,5 +1,8 @@
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Scanner;
 import static java.lang.Integer.parseInt;
 
@@ -8,29 +11,42 @@ public class Day8
     public static int numOfCoords = 0;
     public static int numOfDistances = 0;
     public static int[][] list;
-    public static long[][] distances;
+    public static int[][] distances;
 
     public static void main(String[] args) throws FileNotFoundException
     {
         createList();
         calculateDistances();
-        connectJunctionBoxes(10);
+        System.out.println(connectJunctionBoxes(10));
     }
 
-    public static void connectJunctionBoxes(int numOfConnections)
+    public static int connectJunctionBoxes(int numOfConnections)
     {
-        for(int s = 0; s < numOfConnections; s++)
+        for(int c = 0; c < numOfConnections; c++)
         {
-            long shortest = distances[0][0];
+            long shortestDistance = distances[0][0];
             int index = 0;
             for(int d = 1; d < numOfDistances; d++)
             {
-                if(distances[0][d] < shortest && distances[0][d] > 0)
+                if(distances[0][d] < shortestDistance && distances[0][d] > 0)
                 {
-                    shortest = distances[0][d];
+                    shortestDistance = distances[0][d];
                     index = d;
                 }
             }
+            distances[0][index] = 0;
+            if(list[3][distances[1][index]] == list[3][distances[2][index]]) numOfConnections++;
+            else
+            {
+                if(list[3][distances[1][index]] < list[3][distances[2][index]])
+                    list[3][distances[2][index]] = list[3][distances[1][index]];
+                else list[3][distances[1][index]] = list[3][distances[2][index]];
+            }
+        }
+        List<Integer> circuits = new ArrayList<>(Arrays.asList(0));
+        List<Integer> sizes = new ArrayList<>(Arrays.asList(1));
+        for(int c = 0; c < numOfCoords; c++)
+        {
         }
     }
 
@@ -43,13 +59,14 @@ public class Day8
             numOfDistances += temp;
             temp--;
         }
-        distances = new long[3][numOfDistances];
+        distances = new int[3][numOfDistances];
         int count = 0;
         for(int c = 0; c < numOfCoords; c++)
         {
             for(int i = c + 1; i < numOfCoords; i++)
             {
-                distances[0][count] = (long)(Math.pow(list[0][c] - list[0][i], 2) + Math.pow(list[1][c] - list[1][i], 2) + Math.pow(list[2][c] - list[2][i], 2));
+                distances[0][count] = (int)(Math.pow(list[0][c] - list[0][i], 2) +
+                        Math.pow(list[1][c] - list[1][i], 2) + Math.pow(list[2][c] - list[2][i], 2));
                 distances[1][count] = c;
                 distances[2][count] = i;
                 count++;
