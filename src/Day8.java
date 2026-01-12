@@ -1,9 +1,7 @@
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Scanner;
+import java.util.Arrays;
 import static java.lang.Integer.parseInt;
 
 public class Day8
@@ -12,19 +10,27 @@ public class Day8
     public static int numOfDistances = 0;
     public static int[][] list;
     public static int[][] distances;
+    public static int[] groupSizes;
 
     public static void main(String[] args) throws FileNotFoundException
     {
         createList();
         calculateDistances();
-        System.out.println(connectJunctionBoxes(10));
+        System.out.println(multiplyThreeLargest());
     }
 
-    public static int connectJunctionBoxes(int numOfConnections)
+    public static int multiplyThreeLargest()
     {
-        for(int c = 0; c < numOfConnections; c++)
+        connectJunctionBoxes(1000);
+        Arrays.sort(groupSizes);
+        return groupSizes[numOfCoords - 1] * groupSizes[numOfCoords - 2] * groupSizes[numOfCoords - 3];
+    }
+
+    public static void connectJunctionBoxes(int numOfConnections)
+    {
+        for(int s = 0; s < numOfConnections; s++)
         {
-            long shortestDistance = distances[0][0];
+            int shortestDistance = distances[0][0];
             int index = 0;
             for(int d = 1; d < numOfDistances; d++)
             {
@@ -35,24 +41,22 @@ public class Day8
                 }
             }
             distances[0][index] = 0;
-            if(list[3][distances[1][index]] == list[3][distances[2][index]]) numOfConnections++;
-            else
+            int oldGroupNum = list[3][distances[2][index]];
+            int newGroupNum = list[3][distances[1][index]];
+            if(oldGroupNum != newGroupNum)
             {
-                if(list[3][distances[1][index]] < list[3][distances[2][index]])
-                    list[3][distances[2][index]] = list[3][distances[1][index]];
-                else list[3][distances[1][index]] = list[3][distances[2][index]];
+                for(int c = 0; c < numOfCoords; c++)
+                {
+                    if(list[3][c] == oldGroupNum) list[3][c] = newGroupNum;
+                }
+                groupSizes[newGroupNum] = groupSizes[newGroupNum] + groupSizes[oldGroupNum];
+                groupSizes[oldGroupNum] = 0;
             }
-        }
-        List<Integer> circuits = new ArrayList<>(Arrays.asList(0));
-        List<Integer> sizes = new ArrayList<>(Arrays.asList(1));
-        for(int c = 0; c < numOfCoords; c++)
-        {
         }
     }
 
     public static void calculateDistances()
     {
-        numOfDistances = 0;
         int temp = numOfCoords - 1;
         while(temp > 0)
         {
@@ -65,8 +69,8 @@ public class Day8
         {
             for(int i = c + 1; i < numOfCoords; i++)
             {
-                distances[0][count] = (int)(Math.pow(list[0][c] - list[0][i], 2) +
-                        Math.pow(list[1][c] - list[1][i], 2) + Math.pow(list[2][c] - list[2][i], 2));
+                distances[0][count] = (int) Math.sqrt((Math.pow(list[0][c] - list[0][i], 2) +
+                        Math.pow(list[1][c] - list[1][i], 2) + Math.pow(list[2][c] - list[2][i], 2)));
                 distances[1][count] = c;
                 distances[2][count] = i;
                 count++;
@@ -84,6 +88,7 @@ public class Day8
             numOfCoords++;
         }
         list = new int[4][numOfCoords];
+        groupSizes = new int[numOfCoords];
         s = new Scanner(f);
         while(s.hasNextLine())
         {
@@ -96,6 +101,7 @@ public class Day8
                     coord = coord.substring(coord.indexOf(",") + 1);
                 }
                 list[3][c] = c;
+                groupSizes[c] = 1;
             }
         }
     }
