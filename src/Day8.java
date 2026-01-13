@@ -2,6 +2,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 import java.util.Arrays;
+import java.util.stream.IntStream;
 import static java.lang.Integer.parseInt;
 
 public class Day8
@@ -11,47 +12,54 @@ public class Day8
     public static int[][] list;
     public static int[][] distances;
     public static int[] groupSizes;
+    public static int[] lastTwoXCoords = new int[2];
 
     public static void main(String[] args) throws FileNotFoundException
     {
         createList();
         calculateDistances();
-        System.out.println(multiplyThreeLargest());
+        //System.out.println(multiplyThreeLargestSizes(1000));
+        System.out.println(multiplyLastTwoXCoords());
     }
 
-    public static int multiplyThreeLargest()
+    public static int multiplyLastTwoXCoords()
     {
-        connectJunctionBoxes(1000);
+        while(IntStream.of(groupSizes).noneMatch(n -> n == numOfCoords)) createAConnection();
+        return lastTwoXCoords[0] * lastTwoXCoords[1];
+    }
+
+    public static int multiplyThreeLargestSizes(int numOfConnections)
+    {
+        for(int c = 0; c < numOfConnections; c++) createAConnection();
         Arrays.sort(groupSizes);
         return groupSizes[numOfCoords - 1] * groupSizes[numOfCoords - 2] * groupSizes[numOfCoords - 3];
     }
 
-    public static void connectJunctionBoxes(int numOfConnections)
+    public static void createAConnection()
     {
-        for(int s = 0; s < numOfConnections; s++)
+        int shortestDistance = distances[0][0];
+        int index = 0;
+        for(int d = 1; d < numOfDistances; d++)
         {
-            int shortestDistance = distances[0][0];
-            int index = 0;
-            for(int d = 1; d < numOfDistances; d++)
+            if(distances[0][d] < shortestDistance && distances[0][d] > 0)
             {
-                if(distances[0][d] < shortestDistance && distances[0][d] > 0)
-                {
-                    shortestDistance = distances[0][d];
-                    index = d;
-                }
+                shortestDistance = distances[0][d];
+                index = d;
             }
-            distances[0][index] = 0;
-            int oldGroupNum = list[3][distances[2][index]];
-            int newGroupNum = list[3][distances[1][index]];
-            if(oldGroupNum != newGroupNum)
+        }
+        distances[0][index] = 0;
+        int oldGroupNum = list[3][distances[2][index]];
+        int newGroupNum = list[3][distances[1][index]];
+        if(oldGroupNum != newGroupNum)
+        {
+            for(int c = 0; c < numOfCoords; c++)
             {
-                for(int c = 0; c < numOfCoords; c++)
-                {
-                    if(list[3][c] == oldGroupNum) list[3][c] = newGroupNum;
-                }
-                groupSizes[newGroupNum] = groupSizes[newGroupNum] + groupSizes[oldGroupNum];
-                groupSizes[oldGroupNum] = 0;
+                if(list[3][c] == oldGroupNum) list[3][c] = newGroupNum;
             }
+            groupSizes[newGroupNum] = groupSizes[newGroupNum] + groupSizes[oldGroupNum];
+            groupSizes[oldGroupNum] = 0;
+            lastTwoXCoords[0] = list[0][distances[1][index]];
+            lastTwoXCoords[1] = list[0][distances[2][index]];
         }
     }
 
