@@ -1,48 +1,42 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Collections;
 import static java.lang.Integer.parseInt;
 
 public class Day9
 {
     public static int numOfCoords;
-    public static int numOfAreas;
     public static int[][] tileLocations;
-    public static long[] areas;
+    public static List<Long> areas;
 
     public static void main(String[] args) throws FileNotFoundException
     {
         storeTileLocations();
-        calculateAreas();
-        System.out.println(getLargestArea());
+        System.out.println(getLargestArea1());
+        System.out.println(getLargestArea2());
     }
 
-    public static long getLargestArea()
+    public static long getLargestArea2()
     {
-        Arrays.sort(areas);
-        return areas[numOfAreas - 1];
+        return 0;
     }
 
-    public static void calculateAreas()
+    public static long getLargestArea1()
     {
-        int temp = numOfCoords - 1;
-        while(temp > 0)
-        {
-            numOfAreas += temp;
-            temp--;
-        }
-        areas = new long[numOfAreas];
-        int count = 0;
+        areas = new ArrayList<>();
         for(int c = 0; c < numOfCoords; c++)
         {
             for(int i = c + 1; i < numOfCoords; i++)
             {
-                areas[count] = (long) Math.abs(tileLocations[0][c] - tileLocations[0][i] + 1) *
-                        Math.abs(tileLocations[1][c] - tileLocations[1][i] + 1);
-                count++;
+                areas.addLast((long) Math.abs(tileLocations[0][c] - tileLocations[0][i] + 1) *
+                        Math.abs(tileLocations[1][c] - tileLocations[1][i] + 1));
             }
         }
+        Collections.sort(areas);
+        return areas.getLast();
     }
 
     public static void storeTileLocations() throws FileNotFoundException
