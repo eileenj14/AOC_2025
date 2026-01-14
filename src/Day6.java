@@ -1,6 +1,9 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Collections;
 import static java.lang.Integer.parseInt;
 
 public class Day6
@@ -8,7 +11,7 @@ public class Day6
     public static int numOfProblems = 0;
     public static int numOfInputsPerProblem = 4;
     public static int[][] problemNums;
-    public static String[] problemOps;
+    public static List<String> problemOps;
 
     public static void main(String[] args) throws FileNotFoundException
     {
@@ -26,7 +29,7 @@ public class Day6
             long answer = problemNums[p][0];
             for(int i = 1; i < numOfInputsPerProblem; i++)
             {
-                if(problemOps[p].equals("*"))
+                if(problemOps.get(p).equals("*"))
                 {
                     if(problemNums[p][i] != 0) answer *= problemNums[p][i];
                 }
@@ -46,7 +49,7 @@ public class Day6
         numOfProblems = lineArray.length;
         s = new Scanner(f);
         problemNums = new int[numOfProblems][numOfInputsPerProblem];
-        problemOps = new String[numOfProblems];
+        problemOps = new ArrayList<>();
         for(int i = 0; i < numOfInputsPerProblem; i++)
         {
             line = s.nextLine();
@@ -55,7 +58,7 @@ public class Day6
         }
         line = s.nextLine();
         lineArray = line.trim().split("\\s+");
-        for(int p = 0; p < numOfProblems; p++) problemOps[p] = lineArray[p];
+        for(int p = 0; p < numOfProblems; p++) problemOps.addLast(lineArray[p]);
     }
 
     public static void createHomework2() throws FileNotFoundException
@@ -91,8 +94,6 @@ public class Day6
                 else problemNums[p][i] = parseInt(num.trim());
             }
         }
-        String[] reverse = new String[numOfProblems];
-        for(int p = 0; p < numOfProblems; p++) reverse[numOfProblems - 1 - p] = problemOps[p];
-        problemOps = reverse;
+        Collections.reverse(problemOps);
     }
 }

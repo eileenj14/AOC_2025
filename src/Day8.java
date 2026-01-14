@@ -1,8 +1,6 @@
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.Scanner;
-import java.util.Arrays;
-import java.util.stream.IntStream;
+import java.util.*;
 import static java.lang.Integer.parseInt;
 
 public class Day8
@@ -11,8 +9,8 @@ public class Day8
     public static int numOfDistances = 0;
     public static int[][] list;
     public static int[][] distances;
-    public static int[] groupSizes;
-    public static int[] lastTwoXCoords = new int[2];
+    public static List<Integer> groupSizes;
+    public static List<Integer> lastTwoXCoords = new ArrayList<>(Arrays.asList(0, 0));
 
     public static void main(String[] args) throws FileNotFoundException
     {
@@ -24,15 +22,15 @@ public class Day8
 
     public static int multiplyLastTwoXCoords()
     {
-        while(IntStream.of(groupSizes).noneMatch(n -> n == numOfCoords)) createAConnection();
-        return lastTwoXCoords[0] * lastTwoXCoords[1];
+        while(!groupSizes.contains(numOfCoords)) createAConnection();
+        return lastTwoXCoords.get(0) * lastTwoXCoords.get(1);
     }
 
     public static int multiplyThreeLargestSizes(int numOfConnections)
     {
         for(int c = 0; c < numOfConnections; c++) createAConnection();
-        Arrays.sort(groupSizes);
-        return groupSizes[numOfCoords - 1] * groupSizes[numOfCoords - 2] * groupSizes[numOfCoords - 3];
+        Collections.sort(groupSizes);
+        return groupSizes.getLast() * groupSizes.get(numOfCoords - 2) * groupSizes.get(numOfCoords - 3);
     }
 
     public static void createAConnection()
@@ -56,10 +54,10 @@ public class Day8
             {
                 if(list[3][c] == oldGroupNum) list[3][c] = newGroupNum;
             }
-            groupSizes[newGroupNum] = groupSizes[newGroupNum] + groupSizes[oldGroupNum];
-            groupSizes[oldGroupNum] = 0;
-            lastTwoXCoords[0] = list[0][distances[1][index]];
-            lastTwoXCoords[1] = list[0][distances[2][index]];
+            groupSizes.set(newGroupNum, groupSizes.get(newGroupNum) + groupSizes.get(oldGroupNum));
+            groupSizes.set(oldGroupNum, 0);
+            lastTwoXCoords.set(0, list[0][distances[1][index]]);
+            lastTwoXCoords.set(1, list[0][distances[2][index]]);
         }
     }
 
@@ -96,7 +94,7 @@ public class Day8
             numOfCoords++;
         }
         list = new int[4][numOfCoords];
-        groupSizes = new int[numOfCoords];
+        groupSizes = new ArrayList<>();
         s = new Scanner(f);
         while(s.hasNextLine())
         {
@@ -109,7 +107,7 @@ public class Day8
                     coord = coord.substring(coord.indexOf(",") + 1);
                 }
                 list[3][c] = c;
-                groupSizes[c] = 1;
+                groupSizes.addLast(1);
             }
         }
     }
