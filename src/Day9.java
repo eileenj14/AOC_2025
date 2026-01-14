@@ -10,11 +10,13 @@ public class Day9
 {
     public static int numOfCoords;
     public static int[][] tileLocations;
+    public static String[][] floor;
     public static List<Long> areas;
 
     public static void main(String[] args) throws FileNotFoundException
     {
         storeTileLocations();
+        createFloor();
         System.out.println(getLargestArea1());
         System.out.println(getLargestArea2());
     }
@@ -37,6 +39,18 @@ public class Day9
         }
         Collections.sort(areas);
         return areas.getLast();
+    }
+
+    public static void createFloor()
+    {
+        int largestXCoord = tileLocations[0][0];
+        int largestYCoord = tileLocations[1][0];
+        for(int c = 1; c < numOfCoords; c++)
+        {
+            if(tileLocations[0][c] > largestXCoord) largestXCoord = tileLocations[0][c];
+            if(tileLocations[1][c] > largestYCoord) largestYCoord = tileLocations[1][c];
+        }
+        floor = new String[largestXCoord][largestYCoord];
     }
 
     public static void storeTileLocations() throws FileNotFoundException
