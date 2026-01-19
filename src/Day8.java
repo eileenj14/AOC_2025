@@ -20,17 +20,17 @@ public class Day8
         System.out.println(multiplyLastTwoXCoords());
     }
 
-    public static int multiplyLastTwoXCoords()
-    {
-        while(!groupSizes.contains(numOfCoords)) createAConnection();
-        return lastTwoXCoords.get(0) * lastTwoXCoords.get(1);
-    }
-
     public static int multiplyThreeLargestSizes(int numOfConnections)
     {
         for(int c = 0; c < numOfConnections; c++) createAConnection();
         Collections.sort(groupSizes);
         return groupSizes.getLast() * groupSizes.get(numOfCoords - 2) * groupSizes.get(numOfCoords - 3);
+    }
+
+    public static int multiplyLastTwoXCoords()
+    {
+        while(!groupSizes.contains(numOfCoords)) createAConnection();
+        return lastTwoXCoords.get(0) * lastTwoXCoords.get(1);
     }
 
     public static void createAConnection()
@@ -61,29 +61,6 @@ public class Day8
         }
     }
 
-    public static void calculateDistances()
-    {
-        int temp = numOfCoords - 1;
-        while(temp > 0)
-        {
-            numOfDistances += temp;
-            temp--;
-        }
-        distances = new int[3][numOfDistances];
-        int count = 0;
-        for(int c = 0; c < numOfCoords; c++)
-        {
-            for(int i = c + 1; i < numOfCoords; i++)
-            {
-                distances[0][count] = (int) Math.sqrt((Math.pow(list[0][c] - list[0][i], 2) +
-                        Math.pow(list[1][c] - list[1][i], 2) + Math.pow(list[2][c] - list[2][i], 2)));
-                distances[1][count] = c;
-                distances[2][count] = i;
-                count++;
-            }
-        }
-    }
-
     public static void createList() throws FileNotFoundException
     {
         File f = new File("Day8_Input.txt");
@@ -108,6 +85,29 @@ public class Day8
                 }
                 list[3][c] = c;
                 groupSizes.addLast(1);
+            }
+        }
+    }
+
+    public static void calculateDistances()
+    {
+        int temp = numOfCoords - 1;
+        while(temp > 0)
+        {
+            numOfDistances += temp;
+            temp--;
+        }
+        distances = new int[3][numOfDistances];
+        int count = 0;
+        for(int c = 0; c < numOfCoords; c++)
+        {
+            for(int i = c + 1; i < numOfCoords; i++)
+            {
+                distances[0][count] = (int) Math.sqrt((Math.pow(list[0][c] - list[0][i], 2) +
+                        Math.pow(list[1][c] - list[1][i], 2) + Math.pow(list[2][c] - list[2][i], 2)));
+                distances[1][count] = c;
+                distances[2][count] = i;
+                count++;
             }
         }
     }

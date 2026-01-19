@@ -1,43 +1,27 @@
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.Scanner;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Collections;
+import java.util.*;
 import static java.lang.Integer.parseInt;
 
 public class Day9
 {
     public static int numOfCoords;
-    public static int[][] tileLocations;
-    public static String[][] floor;
+    public static int maxXCoord;
+    public static int maxYCoord;
+    public static int[] xCoords;
+    public static int[] yCoords;
+    public static int[] compressedXCoords;
+    public static int[] compressedYCoords;
+    public static byte[][] floor;
     public static List<Long> areas;
 
     public static void main(String[] args) throws FileNotFoundException
     {
         storeTileLocations();
+        compressCoords();
         createFloor();
-        //System.out.println(getLargestArea1());
+        System.out.println(getLargestArea1());
         System.out.println(getLargestArea2());
-    }
-
-    public static long getLargestArea2()
-    {
-        areas = new ArrayList<>();
-        for(int c = 0; c < numOfCoords; c++)
-        {
-            for(int i = c + 1; i < numOfCoords; i++)
-            {
-
-            }
-        }
-        Collections.sort(areas);
-        return areas.getLast();
-    }
-
-    public static boolean check(int xCoord, int yCoord, String direction)
-    {
-        return false;
     }
 
     public static long getLargestArea1()
@@ -47,12 +31,48 @@ public class Day9
         {
             for(int i = c + 1; i < numOfCoords; i++)
             {
-                areas.addLast((long) Math.abs(tileLocations[0][c] - tileLocations[0][i] + 1) *
-                        Math.abs(tileLocations[1][c] - tileLocations[1][i] + 1));
+                areas.addLast((long) Math.abs(xCoords[c] - xCoords[i] + 1) *
+                        Math.abs(yCoords[c] - yCoords[i] + 1));
             }
         }
         Collections.sort(areas);
         return areas.getLast();
+    }
+
+    public static long getLargestArea2()
+    {
+        areas = new ArrayList<>();
+        for(int c = 0; c < numOfCoords; c++)
+        {
+            for(int i = c + 1; i < numOfCoords; i++)
+            {
+                if(validPoint(compressedXCoords[c], compressedYCoords[i]) &&
+                        validPoint(compressedXCoords[i], compressedYCoords[c]))
+                {
+                    areas.addLast((long) Math.abs(xCoords[c] - xCoords[i] + 1) *
+                        Math.abs(yCoords[c] - yCoords[i] + 1));
+                }
+            }
+        }
+        Collections.sort(areas);
+        return areas.getLast();
+    }
+
+    public static boolean validPoint(int xCoord, int yCoord)
+    {
+        int xIntersects = 0;
+        int yIntersects = 0;
+        if(xCoord == 0) xCoord++;
+        if(yCoord == 0) yCoord++;
+        for(int x = xCoord; x < maxXCoord + 1; x++)
+        {
+            if(floor[x][yCoord] == 1 && floor[x - 1][yCoord] == 0 && floor[x + 1][yCoord] == 0) xIntersects++;
+        }
+        for(int y = yCoord; y < maxYCoord + 1; y++)
+        {
+            if(floor[xCoord][y] == 1 && floor[xCoord][y - 1] == 0 && floor[xCoord][y + 1] == 0) yIntersects++;
+        }
+        return xIntersects % 2 == 1 && yIntersects % 2 == 1;
     }
 
     public static void storeTileLocations() throws FileNotFoundException
@@ -64,80 +84,76 @@ public class Day9
             String coord = s.nextLine();
             numOfCoords++;
         }
-        tileLocations = new int[2][numOfCoords];
+        xCoords = new int[numOfCoords];
+        yCoords = new int[numOfCoords];
         s = new Scanner(f);
-        while(s.hasNextLine())
+        for(int c = 0; c < numOfCoords; c++)
         {
-            for(int c = 0; c < numOfCoords; c++)
-            {
-                String coord = s.nextLine() + ",";
-                for(int i = 0; i < 2; i++)
-                {
-                    tileLocations[i][c] = parseInt(coord.substring(0, coord.indexOf(",")));
-                    coord = coord.substring(coord.indexOf(",") + 1);
-                }
-            }
+            String coord = s.nextLine();
+            xCoords[c] = parseInt(coord.substring(0, coord.indexOf(",")));
+            yCoords[c] = parseInt(coord.substring(coord.indexOf(",") + 1));
+        }
+    }
+
+    public static void compressCoords()
+    {
+        Set<Integer> uniqueXCoords = new HashSet<>();
+        Set<Integer> uniqueYCoords = new HashSet<>();
+        for(int coord : xCoords) uniqueXCoords.add(coord);
+        for(int coord : yCoords) uniqueYCoords.add(coord);
+        List<Integer> sortedX = new ArrayList<>(uniqueXCoords);
+        List<Integer> sortedY = new ArrayList<>(uniqueYCoords);
+        Collections.sort(sortedX);
+        Collections.sort(sortedY);
+        Map<Integer, Integer> compressedMapX = new HashMap<>();
+        Map<Integer, Integer> compressedMapY = new HashMap<>();
+        for(int c = 0; c < sortedX.size(); c++)
+        {
+            compressedMapX.put(sortedX.get(c), c * 2);
+            compressedMapY.put(sortedY.get(c), c * 2);
+        }
+        compressedXCoords = new int[numOfCoords];
+        compressedYCoords = new int[numOfCoords];
+        for(int c = 0; c < numOfCoords; c++)
+        {
+            compressedXCoords[c] = compressedMapX.get(xCoords[c]);
+            compressedYCoords[c] = compressedMapY.get(yCoords[c]);
         }
     }
 
     public static void createFloor()
     {
-        int largestXCoord = tileLocations[0][0];
-        int largestYCoord = tileLocations[1][0];
+        maxXCoord = compressedXCoords[0];
+        maxYCoord = compressedYCoords[0];
+        for(int c = 0; c < compressedXCoords.length; c++)
+        {
+            if(compressedXCoords[c] > maxXCoord) maxXCoord = compressedXCoords[c];
+            if(compressedYCoords[c] > maxYCoord) maxYCoord = compressedYCoords[c];
+        }
+        floor = new byte[maxXCoord + 2][maxYCoord + 2];
+        floor[compressedXCoords[0]][compressedYCoords[0]] = 1;
         for(int c = 1; c < numOfCoords; c++)
         {
-            if(tileLocations[0][c] > largestXCoord) largestXCoord = tileLocations[0][c];
-            if(tileLocations[1][c] > largestYCoord) largestYCoord = tileLocations[1][c];
+            connectRedTiles(compressedXCoords[c - 1], compressedYCoords[c - 1],
+                    compressedXCoords[c], compressedYCoords[c]);
+            floor[compressedXCoords[c]][compressedYCoords[c]] = 1;
         }
-        largestXCoord += 2;
-        largestYCoord += 2;
-        floor = new String[largestXCoord][largestYCoord];
-        floor[tileLocations[0][0]][tileLocations[1][0]] = "#";
-        for(int c = 1; c < numOfCoords; c++)
-        {
-            connectRedTiles(tileLocations[0][c - 1], tileLocations[1][c - 1],
-                    tileLocations[0][c], tileLocations[1][c]);
-            floor[tileLocations[0][c]][tileLocations[1][c]] = "#";
-        }
-        connectRedTiles(tileLocations[0][numOfCoords - 1], tileLocations[1][numOfCoords - 1],
-                tileLocations[0][0], tileLocations[1][0]);
-        for(int x = 0; x < largestXCoord; x++)
-        {
-            for(int y = 0; y < largestYCoord; y++) if(floor[x][y] == null) floor[x][y] = ".";
-        }
-        for(int y = 0; y < largestYCoord; y++)
-        {
-            for(int x = 0; x < largestXCoord; x++)
-            {
-                System.out.print(floor[x][y] + " ");
-            }
-            System.out.println();
-        }
+        connectRedTiles(compressedXCoords[numOfCoords - 1], compressedYCoords[numOfCoords - 1],
+                compressedXCoords[0], compressedYCoords[0]);
     }
 
     public static void connectRedTiles(int prevX, int prevY, int thisX, int thisY)
     {
+        int increment = 1;
         if(thisX == prevX)
         {
-            if(thisY < prevY)
-            {
-                for(int y = thisY + 1; y < prevY; y += 1) floor[thisX][y] = "#";
-            }
-            else
-            {
-                for(int y = prevY + 1; y < thisY; y += 1) floor[thisX][y] = "#";
-            }
+            if(thisY < prevY) increment = -1;
+            for(int y = prevY + increment; y != thisY; y += increment) floor[thisX][y] = 1;
         }
         else
         {
-            if(thisX < prevX)
-            {
-                for(int x = thisX + 1; x < prevX; x += 1) floor[x][thisY] = "#";
-            }
-            else
-            {
-                for(int x = prevX + 1; x < thisX; x += 1) floor[x][thisY] = "#";
-            }
+            if(thisX < prevX) increment = -1;
+            for(int x = prevX + increment; x != thisX; x += increment) floor[x][thisY] = 1;
         }
     }
 }
