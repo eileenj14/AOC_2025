@@ -67,10 +67,28 @@ public class Day9
         for(int x = xCoord; x < maxXCoord + 1; x++)
         {
             if(floor[x][yCoord] == 1 && floor[x - 1][yCoord] == 0 && floor[x + 1][yCoord] == 0) xIntersects++;
+            else
+            {
+                if(floor[x][yCoord] == 1 && floor[x - 1][yCoord] == 0 && floor[x + 1][yCoord] == 1)
+                {
+                    int x2 = x;
+                    while(floor[x2 + 1][yCoord] == 1) x2++;
+                    if(floor[x][yCoord + 1] != floor[x2][yCoord + 1]) xIntersects++;
+                }
+            }
         }
         for(int y = yCoord; y < maxYCoord + 1; y++)
         {
             if(floor[xCoord][y] == 1 && floor[xCoord][y - 1] == 0 && floor[xCoord][y + 1] == 0) yIntersects++;
+            else
+            {
+                if(floor[xCoord][y] == 1 && floor[xCoord][y - 1] == 0 && floor[xCoord][y + 1] == 1)
+                {
+                    int y2 = y;
+                    while(floor[xCoord][y2 + 1] == 1) y2++;
+                    if(floor[xCoord + 1][y] != floor[xCoord][y2 + 1]) yIntersects++;
+                }
+            }
         }
         return xIntersects % 2 == 1 && yIntersects % 2 == 1;
     }
