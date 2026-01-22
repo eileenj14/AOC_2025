@@ -46,8 +46,8 @@ public class Day9
         Map<Integer, Integer> compressedMapY = new HashMap<>();
         for(int c = 0; c < sortedUniqueX.size(); c++)
         {
-            compressedMapX.put(sortedUniqueX.get(c), c);
-            compressedMapY.put(sortedUniqueY.get(c), c);
+            compressedMapX.put(sortedUniqueX.get(c), c * 2);
+            compressedMapY.put(sortedUniqueY.get(c), c * 2);
         }
         compressedXCoords = new int[numOfCoords];
         compressedYCoords = new int[numOfCoords];
@@ -70,8 +70,8 @@ public class Day9
         {
             for(int i = c + 2; i < numOfCoords; i++)
             {
-                areas.addLast((long) Math.abs(xCoords[c] - xCoords[i] + 1) *
-                        Math.abs(yCoords[c] - yCoords[i] + 1));
+                areas.addLast((long) (Math.abs(xCoords[c] - xCoords[i]) + 1) *
+                        (Math.abs(yCoords[c] - yCoords[i]) + 1));
             }
         }
         Collections.sort(areas);
@@ -87,8 +87,8 @@ public class Day9
             {
                 if(validRectangle(c, i))
                 {
-                    areas.addLast((long) Math.abs(xCoords[c] - xCoords[i] + 1) *
-                        Math.abs(yCoords[c] - yCoords[i] + 1));
+                    areas.addLast((long) (Math.abs(xCoords[c] - xCoords[i]) + 1) *
+                            (Math.abs(yCoords[c] - yCoords[i]) + 1));
                 }
             }
         }
@@ -98,23 +98,11 @@ public class Day9
 
     public static boolean validRectangle(int index1, int index2)
     {
-        int x1 = compressedXCoords[index1];
-        int y1 = compressedYCoords[index1];
-        int x2 = compressedXCoords[index2];
-        int y2 = compressedYCoords[index2];
-        if(x2 < x1)
+        for(int x = Math.min(compressedXCoords[index1], compressedXCoords[index2]);
+            x < Math.max(compressedXCoords[index1], compressedXCoords[index2]) + 1; x++)
         {
-            x1 = x2;
-            x2 = compressedXCoords[index1];
-        }
-        if(y2 < y1)
-        {
-            y1 = y2;
-            y2 = compressedYCoords[index1];
-        }
-        for(int x = x1; x < x2 + 1; x++)
-        {
-            for(int y = y1; y < y2 + 1; y++)
+            for(int y = Math.min(compressedYCoords[index1], compressedYCoords[index2]);
+                y < Math.max(compressedYCoords[index1], compressedYCoords[index2]) + 1; y++)
             {
                 if(floor[x][y] == '.') return false;
             }
@@ -126,10 +114,10 @@ public class Day9
     {
         maxXCoord = compressedXCoords[0];
         maxYCoord = compressedYCoords[0];
-        for(int c = 0; c < numOfCoords; c++)
+        for(int c = 1; c < numOfCoords; c++)
         {
-            if(compressedXCoords[c] > maxXCoord) maxXCoord = compressedXCoords[c];
-            if(compressedYCoords[c] > maxYCoord) maxYCoord = compressedYCoords[c];
+            maxXCoord = Math.max(maxXCoord, compressedXCoords[c]);
+            maxYCoord = Math.max(maxYCoord, compressedYCoords[c]);
         }
         floor = new char[maxXCoord + 1][maxYCoord + 1];
         floor[compressedXCoords[0]][compressedYCoords[0]] = '#';
@@ -141,32 +129,29 @@ public class Day9
         }
         placePerimeterTiles(compressedXCoords[numOfCoords - 1], compressedYCoords[numOfCoords - 1],
                 compressedXCoords[0], compressedYCoords[0]);
-        defineInsideOutside();
+        placeOutsideTiles();
     }
 
     public static void placePerimeterTiles(int prevX, int prevY, int thisX, int thisY)
     {
-        int increment = 1;
         if(thisX == prevX)
         {
-            if(thisY < prevY) increment = -1;
-            for(int y = prevY + increment; y != thisY; y += increment) floor[thisX][y] = 'X';
+            for(int y = Math.min(prevY, thisY) + 1; y < Math.max(prevY, thisY); y++) floor[thisX][y] = 'X';
         }
         else
         {
-            if(thisX < prevX) increment = -1;
-            for(int x = prevX + increment; x != thisX; x += increment) floor[x][thisY] = 'X';
+            for(int x = Math.min(prevX, thisX) + 1; x < Math.max(prevX, thisX); x++) floor[x][thisY] = 'X';
         }
     }
 
-    public static void defineInsideOutside()
+    public static void placeOutsideTiles()
     {
         for(int x = 0; x < maxXCoord + 1; x++)
         {
             if(floor[x][0] == 0)
             {
                 int y = 0;
-                while(floor[x][y] == 0 && y < maxYCoord)
+                while(floor[x][y] != 'X')
                 {
                     floor[x][y] = '.';
                     y++;
@@ -175,7 +160,7 @@ public class Day9
             if(floor[x][maxYCoord] == 0)
             {
                 int y = maxYCoord;
-                while(floor[x][y] == 0 && y > 0)
+                while(floor[x][y] != 'X')
                 {
                     floor[x][y] = '.';
                     y--;
@@ -187,7 +172,7 @@ public class Day9
             if(floor[0][y] == '.')
             {
                 int x = 0;
-                while((floor[x][y] == '.' || floor[x][y] == 0) && x < maxXCoord)
+                while(floor[x][y] != 'X')
                 {
                     floor[x][y] = '.';
                     x++;
@@ -196,18 +181,11 @@ public class Day9
             if(floor[maxXCoord][y] == '.')
             {
                 int x = maxXCoord;
-                while((floor[x][y] == '.' || floor[x][y] == 0) && x > 0)
+                while(floor[x][y] != 'X')
                 {
                     floor[x][y] = '.';
                     x--;
                 }
-            }
-        }
-        for(int x = 0; x < maxXCoord + 1; x++)
-        {
-            for(int y = 0; y < maxYCoord + 1; y++)
-            {
-                if(floor[x][y] == 0) floor[x][y] = 'X';
             }
         }
     }
