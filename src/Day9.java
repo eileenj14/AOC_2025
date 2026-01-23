@@ -17,48 +17,8 @@ public class Day9
 
     public static void main(String[] args) throws FileNotFoundException
     {
-        File f = new File("Day9_Input.txt");
-        Scanner s = new Scanner(f);
-        while(s.hasNextLine())
-        {
-            String coord = s.nextLine();
-            numOfCoords++;
-        }
-        xCoords = new int[numOfCoords];
-        yCoords = new int[numOfCoords];
-        s = new Scanner(f);
-        for(int c = 0; c < numOfCoords; c++)
-        {
-            String coord = s.nextLine();
-            xCoords[c] = parseInt(coord.substring(0, coord.indexOf(",")));
-            yCoords[c] = parseInt(coord.substring(coord.indexOf(",") + 1));
-        }
-
-        Set<Integer> uniqueX = new HashSet<>();
-        Set<Integer> uniqueY = new HashSet<>();
-        for(int coord : xCoords) uniqueX.add(coord);
-        for(int coord : yCoords) uniqueY.add(coord);
-        List<Integer> sortedUniqueX = new ArrayList<>(uniqueX);
-        List<Integer> sortedUniqueY = new ArrayList<>(uniqueY);
-        Collections.sort(sortedUniqueX);
-        Collections.sort(sortedUniqueY);
-        Map<Integer, Integer> compressedMapX = new HashMap<>();
-        Map<Integer, Integer> compressedMapY = new HashMap<>();
-        for(int c = 0; c < sortedUniqueX.size(); c++)
-        {
-            compressedMapX.put(sortedUniqueX.get(c), c * 2);
-            compressedMapY.put(sortedUniqueY.get(c), c * 2);
-        }
-        compressedXCoords = new int[numOfCoords];
-        compressedYCoords = new int[numOfCoords];
-        for(int c = 0; c < numOfCoords; c++)
-        {
-            compressedXCoords[c] = compressedMapX.get(xCoords[c]);
-            compressedYCoords[c] = compressedMapY.get(yCoords[c]);
-        }
-
+        storeAndCompressCoords();
         createFloor();
-
         System.out.println(getLargestArea1());
         System.out.println(getLargestArea2());
     }
@@ -110,6 +70,48 @@ public class Day9
         return true;
     }
 
+    public static void storeAndCompressCoords() throws FileNotFoundException
+    {
+        File f = new File("Day9_Input.txt");
+        Scanner s = new Scanner(f);
+        while(s.hasNextLine())
+        {
+            String coord = s.nextLine();
+            numOfCoords++;
+        }
+        xCoords = new int[numOfCoords];
+        yCoords = new int[numOfCoords];
+        s = new Scanner(f);
+        for(int c = 0; c < numOfCoords; c++)
+        {
+            String coord = s.nextLine();
+            xCoords[c] = parseInt(coord.substring(0, coord.indexOf(",")));
+            yCoords[c] = parseInt(coord.substring(coord.indexOf(",") + 1));
+        }
+        Set<Integer> uniqueX = new HashSet<>();
+        Set<Integer> uniqueY = new HashSet<>();
+        for(int coord : xCoords) uniqueX.add(coord);
+        for(int coord : yCoords) uniqueY.add(coord);
+        List<Integer> sortedUniqueX = new ArrayList<>(uniqueX);
+        List<Integer> sortedUniqueY = new ArrayList<>(uniqueY);
+        Collections.sort(sortedUniqueX);
+        Collections.sort(sortedUniqueY);
+        Map<Integer, Integer> compressedMapX = new HashMap<>();
+        Map<Integer, Integer> compressedMapY = new HashMap<>();
+        for(int c = 0; c < sortedUniqueX.size(); c++)
+        {
+            compressedMapX.put(sortedUniqueX.get(c), c * 2);
+            compressedMapY.put(sortedUniqueY.get(c), c * 2);
+        }
+        compressedXCoords = new int[numOfCoords];
+        compressedYCoords = new int[numOfCoords];
+        for(int c = 0; c < numOfCoords; c++)
+        {
+            compressedXCoords[c] = compressedMapX.get(xCoords[c]);
+            compressedYCoords[c] = compressedMapY.get(yCoords[c]);
+        }
+    }
+
     public static void createFloor()
     {
         maxXCoord = compressedXCoords[0];
@@ -151,7 +153,7 @@ public class Day9
             if(floor[x][0] == 0)
             {
                 int y = 0;
-                while(floor[x][y] != 'X')
+                while(floor[x][y] != '#' && floor[x][y] != 'X')
                 {
                     floor[x][y] = '.';
                     y++;
@@ -160,7 +162,7 @@ public class Day9
             if(floor[x][maxYCoord] == 0)
             {
                 int y = maxYCoord;
-                while(floor[x][y] != 'X')
+                while(floor[x][y] != '#' && floor[x][y] != 'X')
                 {
                     floor[x][y] = '.';
                     y--;
@@ -172,7 +174,7 @@ public class Day9
             if(floor[0][y] == '.')
             {
                 int x = 0;
-                while(floor[x][y] != 'X')
+                while(floor[x][y] != '#' && floor[x][y] != 'X')
                 {
                     floor[x][y] = '.';
                     x++;
@@ -181,7 +183,7 @@ public class Day9
             if(floor[maxXCoord][y] == '.')
             {
                 int x = maxXCoord;
-                while(floor[x][y] != 'X')
+                while(floor[x][y] != '#' && floor[x][y] != 'X')
                 {
                     floor[x][y] = '.';
                     x--;

@@ -54,17 +54,12 @@ public class Day2
 
     public static boolean check(String id, int length)
     {
-        boolean check = true;
         String sequence = id.substring(0, length);
         for(int i = length; i <= id.length() - length; i += length)
         {
             String potential = id.substring(i, i + length);
-            if(!potential.equals(sequence))
-            {
-                check = false;
-                break;
-            }
+            if(!potential.equals(sequence)) return false;
         }
-        return check;
+        return true;
     }
 }
