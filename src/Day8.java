@@ -5,9 +5,9 @@ import static java.lang.Integer.parseInt;
 
 public class Day8
 {
-    public static int numOfCoords = 0;
-    public static int numOfDistances = 0;
-    public static int[][] list;
+    public static int numOfCoords;
+    public static int numOfDistances;
+    public static int[][] coords;
     public static int[][] distances;
     public static List<Integer> groupSizes;
     public static List<Integer> lastTwoXCoords = new ArrayList<>(Arrays.asList(0, 0));
@@ -46,18 +46,18 @@ public class Day8
             }
         }
         distances[0][index] = 0;
-        int oldGroupNum = list[3][distances[2][index]];
-        int newGroupNum = list[3][distances[1][index]];
+        int oldGroupNum = coords[3][distances[2][index]];
+        int newGroupNum = coords[3][distances[1][index]];
         if(oldGroupNum != newGroupNum)
         {
             for(int c = 0; c < numOfCoords; c++)
             {
-                if(list[3][c] == oldGroupNum) list[3][c] = newGroupNum;
+                if(coords[3][c] == oldGroupNum) coords[3][c] = newGroupNum;
             }
             groupSizes.set(newGroupNum, groupSizes.get(newGroupNum) + groupSizes.get(oldGroupNum));
             groupSizes.set(oldGroupNum, 0);
-            lastTwoXCoords.set(0, list[0][distances[1][index]]);
-            lastTwoXCoords.set(1, list[0][distances[2][index]]);
+            lastTwoXCoords.set(0, coords[0][distances[1][index]]);
+            lastTwoXCoords.set(1, coords[0][distances[2][index]]);
         }
     }
 
@@ -70,7 +70,7 @@ public class Day8
             String coord = s.nextLine();
             numOfCoords++;
         }
-        list = new int[4][numOfCoords];
+        coords = new int[4][numOfCoords];
         groupSizes = new ArrayList<>();
         s = new Scanner(f);
         while(s.hasNextLine())
@@ -80,10 +80,10 @@ public class Day8
                 String coord = s.nextLine() + ",";
                 for(int i = 0; i < 3; i++)
                 {
-                    list[i][c] = parseInt(coord.substring(0, coord.indexOf(",")));
+                    coords[i][c] = parseInt(coord.substring(0, coord.indexOf(",")));
                     coord = coord.substring(coord.indexOf(",") + 1);
                 }
-                list[3][c] = c;
+                coords[3][c] = c;
                 groupSizes.addLast(1);
             }
         }
@@ -103,8 +103,8 @@ public class Day8
         {
             for(int i = c + 1; i < numOfCoords; i++)
             {
-                distances[0][count] = (int) Math.sqrt((Math.pow(list[0][c] - list[0][i], 2) +
-                        Math.pow(list[1][c] - list[1][i], 2) + Math.pow(list[2][c] - list[2][i], 2)));
+                distances[0][count] = (int) Math.sqrt((Math.pow(coords[0][c] - coords[0][i], 2) +
+                        Math.pow(coords[1][c] - coords[1][i], 2) + Math.pow(coords[2][c] - coords[2][i], 2)));
                 distances[1][count] = c;
                 distances[2][count] = i;
                 count++;

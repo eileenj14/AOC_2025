@@ -7,8 +7,8 @@ import static java.lang.Long.parseLong;
 
 public class Day5
 {
-    public static int numOfRanges = 0;
-    public static int numOfIds = -1;
+    public static int numOfRanges;
+    public static int numOfIds;
     public static List<Long> idRangeMins;
     public static List<Long> idRangeMaxes;
     public static List<Long> ids;
@@ -56,7 +56,7 @@ public class Day5
         {
             String potential = s.nextLine();
             if(potential.indexOf("-") > 0) numOfRanges++;
-            else numOfIds++;
+            else if(!potential.isBlank()) numOfIds++;
         }
         s = new Scanner(f);
         idRangeMins = new ArrayList<>();
@@ -69,12 +69,11 @@ public class Day5
             idRangeMaxes.add(parseLong(range.substring(range.indexOf("-") + 1)));
         }
         for(int n = 0; n < numOfIds; n++) ids.add(s.nextLong());
-        boolean changed = true;
-        while(changed)
+        while(true)
         {
             int prevNumOfRanges = numOfRanges;
             mergeRanges();
-            if(numOfRanges == prevNumOfRanges) changed = false;
+            if(numOfRanges == prevNumOfRanges) break;
         }
     }
 

@@ -5,7 +5,7 @@ import static java.lang.Long.parseLong;
 
 public class Day2
 {
-    public static long sumOfInvalids = 0;
+    public static long sumOfInvalids;
 
     public static void main(String[] args) throws FileNotFoundException
     {

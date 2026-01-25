@@ -1,15 +1,12 @@
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.Scanner;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Collections;
+import java.util.*;
 import static java.lang.Integer.parseInt;
 
 public class Day6
 {
-    public static int numOfProblems = 0;
     public static int numOfInputsPerProblem = 4;
+    public static int numOfProblems;
     public static int[][] problemNums;
     public static List<String> problemOps;
 
@@ -49,7 +46,6 @@ public class Day6
         numOfProblems = lineArray.length;
         s = new Scanner(f);
         problemNums = new int[numOfProblems][numOfInputsPerProblem];
-        problemOps = new ArrayList<>();
         for(int i = 0; i < numOfInputsPerProblem; i++)
         {
             line = s.nextLine();
@@ -58,7 +54,7 @@ public class Day6
         }
         line = s.nextLine();
         lineArray = line.trim().split("\\s+");
-        for(int p = 0; p < numOfProblems; p++) problemOps.addLast(lineArray[p]);
+        problemOps = new ArrayList<>(Arrays.asList(lineArray));
     }
 
     public static void createHomework2() throws FileNotFoundException

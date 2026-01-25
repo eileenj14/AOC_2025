@@ -6,7 +6,7 @@ import static java.lang.Integer.parseInt;
 public class Day1
 {
     public static int location = 50;
-    public static int zeros = 0;
+    public static int zeros;
 
     public static void main(String[] args) throws FileNotFoundException
     {

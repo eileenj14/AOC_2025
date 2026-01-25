@@ -4,11 +4,11 @@ import java.util.Scanner;
 
 public class Day4
 {
-    public static int numOfColumns = 0;
-    public static int numOfRows = 0;
+    public static int numOfColumns;
+    public static int numOfRows;
+    public static int numOfAccessibleRolls;
+    public static int totalNumOfAccessibleRolls;
     public static String[][] diagram;
-    public static int numOfAccessibleRolls = 0;
-    public static int totalNumOfAccessibleRolls = 0;
 
     public static void main(String[] args) throws FileNotFoundException
     {
