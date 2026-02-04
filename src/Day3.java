@@ -5,9 +5,9 @@ import static java.lang.Integer.parseInt;
 
 public class Day3
 {
-    public static long totalJoltage;
     public static int maxDigit;
     public static int index;
+    public static long totalJoltage;
 
     public static void main(String[] args) throws FileNotFoundException
     {
